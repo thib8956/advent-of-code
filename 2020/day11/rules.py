@@ -73,8 +73,8 @@ def handle_empty_2(index, grid, next_grid):
 
     if neighbors == 0:
         next_grid[index] = "#"
-        return 1
-    return 0
+        return True
+    return False
 
 
 def handle_occupied_2(index, grid, next_grid):
@@ -87,16 +87,16 @@ def handle_occupied_2(index, grid, next_grid):
     y = index // grid_width
     for direction in directions:
         for xx, yy in takewhile(in_bounds, move(x, y, direction)):
-            print(xx, yy)
             cell = grid[yy * grid_width + xx]
-
             if cell == "#":
                 occupied += 1
+            elif cell != ".":
+                break
 
     if occupied >= 5:
         next_grid[index] = "L"
-        return 1
-    return 0
+        return True
+    return False
 
 
 def in_bounds(pos):
@@ -105,10 +105,12 @@ def in_bounds(pos):
 
 
 def move(x, y, direction):
-    pos = x, y
+    xx = x
+    yy = y
     while True:
-        yield pos
-        pos = x + direction[0], y + direction[1]
+        yield xx, yy
+        xx += direction[0]
+        yy += direction[1]
 
 
 part1_rules = {"L": handle_empty, "#": handle_occupied}
