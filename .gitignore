@@ -1,5 +1,5 @@
 # ignore aoc input file
-**/input.txt
+**/*.txt
 
 # ---> Python
 # Byte-compiled / optimized / DLL files
