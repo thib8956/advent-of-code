@@ -1,0 +1,37 @@
+from collections import Counter
+
+
+def blink(data, steps):
+    counter = Counter(data)
+    for i in range(steps):
+        new_counter = Counter()
+        #data = tuple(x for y in (blink_stone(s) for s in data) for x in y)
+        for stone, count in counter.items():
+            s = str(stone)
+            if stone == 0:
+                new_counter[1] += count
+            elif len(s) % 2 == 0:
+                first, second = int(s[:len(s)//2]), int(s[len(s)//2:])
+                new_counter[first] += count
+                new_counter[second] += count
+            else:
+                new_counter[2024*stone] += count
+        counter = new_counter
+        print(len(counter.items()))
+    return counter.total()
+
+
+if __name__ == "__main__":
+    res = blink((125, 17), 25) 
+    assert res == 55312, f"expected 55312, but was {res}"
+
+    import sys
+    if len(sys.argv) > 1:
+        infile = sys.argv[1]
+        with open(infile) as f:
+            data = tuple(map(int, f.read().rstrip().split()))
+            part1 = blink(data, 25)
+            print("Part 1: ", part1)
+            part2 = blink(data, 75)
+            print("Part 2: ", part2)
+
