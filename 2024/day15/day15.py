@@ -48,8 +48,8 @@ def push(grid, pos, movement):
         elif movement == "<":
             start_x, end_x = int(start_pos.real), int(end_pos.real)
             y = int(start_pos.imag)
-            for i in range(start_x, end_x + 1):
-                grid[y][i+1] = "O"  # shift "O" to the left
+            for i in range(start_x, end_x - 1, -1):
+                grid[y][i-1] = "O"  # shift "O" to the left
             grid[y][start_x] = "."
         elif movement == "v":
             start_y, end_y = int(start_pos.imag), int(end_pos.imag)
@@ -60,9 +60,18 @@ def push(grid, pos, movement):
         elif movement == "^":
             start_y, end_y = int(start_pos.imag), int(end_pos.imag)
             x = int(start_pos.real)
-            for i in range(end_y, start_y - 1, -1):
-                grid[i+1][x] = "O"  # shift "O" up
+            for i in range(start_y, end_y - 1, -1):
+                grid[i-1][x] = "O"  # shift "O" up
             grid[start_y][x] = "."
+
+
+def calculate_gps_coords(grid):
+    total = 0
+    for y, row in enumerate(grid):
+        for x, _ in enumerate(row):
+            if grid[y][x] == "O":
+                total += 100*y + x
+    return total
 
 
 def main(content):
@@ -87,7 +96,9 @@ def main(content):
                     pos = new_pos
             case "#": pass
             case c: raise RuntimeError("This should never happen", c)
-        debug_print(grid, movement)
+        #debug_print(grid, movement)
+    part1 = calculate_gps_coords(grid)
+    print("Part 1: ", part1)
 
 
 if __name__ == "__main__":
