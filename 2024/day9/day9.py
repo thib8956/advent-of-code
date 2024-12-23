@@ -29,10 +29,8 @@ def parse_disk(data):
     return disk, disk2
 
 
-def main(inp):
-    disk, disk2 = parse_disk(inp)
+def part1(disk):
     max_file_location = max(disk.keys())
-
     write_ptr = 0
     read_ptr = max_file_location
     while True:
@@ -47,47 +45,66 @@ def main(inp):
 
         disk[write_ptr] = disk[read_ptr]
         del disk[read_ptr]
-
     checksum = sum(i * disk.get(i, 0) for i in range(max_file_location))
-    print("Part 1: ", checksum)
+    return checksum
 
-    print(len(disk2))
-    write_ptr = 0
-    read_ptr = len(disk2) - 1
-    for file_index in range(len(disk2) - 1, 0, -1):
-        file = disk2[file_index]
-        if file.kind != "file":
-            continue
+
+def part2(disk):
+    max_id = max(f.id_ for f in disk)
+    for i in range(max_id, -1, -1):
+        file, file_index = next((file, index) for index, file in enumerate(disk) if file.id_ == i)
 
         # find index of the first gap large enough
-        free_index, free_space = next(((i, b) for i, b in enumerate(disk2) if b.kind == "free" and b.size >= file.size), (None, None))
+        free_index, free_space = next(((i, b) for i, b in enumerate(disk) if b.kind == "free" and b.size >= file.size), (None, None))
         if free_index is None:
             continue
-        # add a free space in place of the file
-        disk2[file_index] = Item("free", file.size)
-        # insert file just before free space
-        disk2.insert(free_index, file)
+        if free_index >= file_index:  # always move file to the left
+            continue
+
         # decrease free space by file size (in case free space is larger)
-        free_space.size -= file.size
+        disk[free_index].size -= file.size
+        # add a free space in place of the file
+        disk[file_index] = Item("free", file.size)
+        # insert file just before free space
+        disk.insert(free_index, file)
+
+        #debug = debug_print(disk)
+        #print(debug)
+
+    # calculate checksum for part2
     total_checksum = 0
     offset = 0
-    print(disk2)
-    print(len(disk2))
-    for f in disk2:
+    #print(disk)
+    debug_print(disk)
+    #print(len(disk))
+    for f in disk:
         if f.kind != "file":
             offset += f.size
             continue
         # S(n) = n*(n+1) // 2
-        print(f"checksum = {f.id_} * ({offset} * {f.size} + ({f.size} * ({f.size - 1})) // 2")
+        #print(f"checksum = {f.id_} * ({offset} * {f.size} + ({f.size} * ({f.size - 1})) // 2")
         checksum = f.id_ * (offset * f.size + (f.size * (f.size - 1)) // 2)
-        print(f, checksum)
+        #print(f, checksum, total_checksum)
 
         offset += f.size
         total_checksum += checksum
-    print(total_checksum)
+    return total_checksum
 
 
+def main(inp):
+    disk, disk2 = parse_disk(inp)
+    print("Part 1: ", part1(disk))
+    print("Part 2: ", part2(disk2))
 
+
+def debug_print(disk):
+    res = []
+    for item in disk:
+        if item.kind == "free" and item.size > 0:
+            res.extend(["."] * item.size)
+        else:
+            res.extend([str(item.id_)] * item.size)
+    return "".join(res)
         
 
 
