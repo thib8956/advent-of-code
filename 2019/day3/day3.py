@@ -70,8 +70,9 @@ def tests():
 
 if __name__ == "__main__":
     tests()
-
-    with open("input.txt") as raw_input:
+    import sys
+    infile = sys.argv[1] if len(sys.argv) > 1 else "example.txt"
+    with open(infile) as raw_input:
         lines = raw_input.readlines()
         wire1, wire2 = [line.strip("\n").split(",") for line in lines]
         print("Part 1 -- distance = ", find_min_distance(wire1, wire2))

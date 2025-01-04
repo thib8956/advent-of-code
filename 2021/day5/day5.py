@@ -35,7 +35,7 @@ def main(infile):
     print(res)
 
 
-
-
 if __name__ == "__main__":
-    main("input.txt")
+    import sys
+    infile = sys.argv[1] if len(sys.argv) > 1 else "example.txt"
+    main(infile)

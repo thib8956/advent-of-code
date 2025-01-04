@@ -17,6 +17,8 @@ def main(inp):
 
     
 if __name__ == '__main__':
-    with open("input.txt") as inp:
+    import sys
+    infile = sys.argv[1] if len(sys.argv) > 1 else "example.txt"
+    with open(infile) as inp:
         main(inp.readlines())
 

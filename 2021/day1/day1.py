@@ -40,5 +40,7 @@ def part2(infile):
 
 
 if __name__ == "__main__":
-    part1("./input.txt")
-    part2("./input.txt")
+    import sys
+    infile = sys.argv[1] if len(sys.argv) > 1 else "example.txt"
+    part1(infile)
+    part2(infile)

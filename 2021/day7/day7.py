@@ -26,8 +26,10 @@ def part2(crabs):
 
 
 if __name__ == "__main__":
-    with open("input.txt") as infile:
-        crabs = [int(x) for x in infile.readline().split(",")]
+    import sys
+    infile = sys.argv[1] if len(sys.argv) > 1 else "example.txt"
+    with open(infile) as f:
+        crabs = [int(x) for x in f.readline().split(",")]
     part1(crabs)
     part2(crabs)
 

@@ -32,10 +32,13 @@ def test_part2():
 
 
 if __name__ == "__main__":
-    print("Part 1 - total mass: ", calculate_total_fuel_mass("./input.txt"))
+    import sys
+    infile = sys.argv[1] if len(sys.argv) > 1 else "example.txt"
+
+    print("Part 1 - total mass: ", calculate_total_fuel_mass(infile))
 
     test_part2()
     print(
         "Part 2 -- total mass: ",
-        calculate_total_fuel_mass("./input.txt", calculate_fuel_iterative),
+        calculate_total_fuel_mass(infile, calculate_fuel_iterative),
     )

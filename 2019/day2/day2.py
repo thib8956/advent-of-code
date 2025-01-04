@@ -54,7 +54,9 @@ def run_program(memory, noun, verb):
 
 if __name__ == "__main__":
     tests()
-    with open("input.txt") as inp:
+    import sys
+    infile = sys.argv[1] if len(sys.argv) > 1 else "example.txt"
+    with open(infile) as inp:
         memory = [int(x) for x in inp.readline().strip().split(",")]
         # Pass a copy to avoid modifying the original memory
         print("Part 1 answer: ", run_program(memory[:], 12, 2))
