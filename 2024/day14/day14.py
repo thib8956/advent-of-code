@@ -8,9 +8,10 @@ def parse_bots(lines):
     return [lines[i:i+2] for i in range(0, len(lines), 2)] # [(pos, velocity), ...]
 
 
-def simulate_bots(bots, grid_size, steps=100):
+def simulate_bots(bots, grid_size, steps=100, part2=False):
     step = 0
     width, height = grid_size
+    stats = []
     while step < steps:
         new_bots = []
         for pos, velocity in bots:
@@ -26,7 +27,13 @@ def simulate_bots(bots, grid_size, steps=100):
             new_bots.append((pos, velocity))
         bots = new_bots
         step += 1
-    return [pos for pos, _ in bots]
+
+        if part2:
+            # search step which maximizes safety value
+            safety = calculate_safety(Counter([p for p, _ in bots]), grid_size)
+            stats.append((safety, step))
+
+    return [pos for pos, _ in bots], stats
 
 
 def determine_quadrant(pos, grid_size):
@@ -43,23 +50,34 @@ def determine_quadrant(pos, grid_size):
     return q
 
 
-def part1(bots, grid_size):
-    bots = simulate_bots(bots, grid_size)
-    c = Counter(bots)
+def calculate_safety(bots, grid_size):
     total_quadrants = [0, 0, 0, 0]
-    for pos, count in c.items():
+    for pos, count in bots.items():
         q = determine_quadrant(pos, grid_size)
         if q is None:  # ignore middle row and col
             continue
         total_quadrants[q] += count
-    #print_grid(c, grid_size)
     return prod(total_quadrants)
+
+
+def part1(bots, grid_size):
+    bots, _ = simulate_bots(bots, grid_size)
+    c = Counter(bots)
+    return calculate_safety(c, grid_size)
+
+
+def part2(bots, grid_size):
+    max_step = grid_size[0] * grid_size[1]  # input is periodic
+    _, stats = simulate_bots(bots, grid_size, max_step, part2=True)
+    return sorted(stats)[0][1]
 
 
 def main(lines):
     bots = parse_bots(lines)
     total = part1(bots, grid_size)
     print("Part 1: ", total)
+    p2 = part2(bots, grid_size)
+    print("Part 2: ", p2)
 
 
 def print_grid(c, grid_size):
