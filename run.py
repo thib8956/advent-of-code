@@ -1,7 +1,30 @@
+import urllib.request
+import getpass
 import sys
 import time
 import subprocess
+import os
 from pathlib import Path
+
+
+_auth = None
+
+
+def get_auth():
+    global _auth
+    if _auth is None:
+        if "AUTH" in os.environ:
+            _auth = os.environ["AUTH"]
+        else:
+            _auth = getpass.getpass(prompt="Cookie: ")
+
+
+def get_input_file(year, day):
+    url = f"https://adventofcode.com/{year}/day/{day}/input"
+    r = urllib.request.Request(url)
+    r.add_header("Cookie", f"session={_auth}")
+    res = urllib.request.urlopen(r)
+    return res
 
 
 def main(year, day):
@@ -13,8 +36,12 @@ def main(year, day):
             print(f"Invalid day {day}", file=sys.stderr)
             exit(1)
         if not input_path.exists():
-            print(f"Could not find input file {input_path}", file=sys.stderr)
-            exit(1)
+            print(f"Downloading input file {input_path}")
+            get_auth()
+            with open(input_path, "wb") as f:
+                res = get_input_file(year, day)
+                f.write(res.read())
+
         run_day(script_path, input_path)
     else:
         for day in range(1, 26):
@@ -23,8 +50,11 @@ def main(year, day):
             input_path = path / Path("input.txt")
             if script_path.exists():
                 if not input_path.exists():
-                    print(f"Could not find input file {input_path}, skipped day {day}.",  file=sys.stderr)
-                    continue
+                    print(f"Downloading input file {input_path}")
+                    get_auth()
+                    with open(input_path, "wb") as f:
+                        res = get_input_file(year, day)
+                        f.write(res.read())
                 run_day(script_path, input_path)
 
 
