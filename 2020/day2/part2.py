@@ -19,14 +19,10 @@ def test_password(line):
         pwd[second_pos - 1] == letter)
 
 
-def main(inp):
-    with open(inp) as passwds:
-        valid_counter = 0
-        for l in passwds:
-            if test_password(l):
-                valid_counter += 1
-        print(f"Number of  valid password in input : {valid_counter}")
+def main(passwds):
+    valid_counter = 0
+    for l in passwds:
+        if test_password(l):
+            valid_counter += 1
+    print(f"Number of  valid password in input : {valid_counter}")
 
-
-if __name__ == "__main__":
-    main('./input.txt')

@@ -50,7 +50,7 @@ def main(year, day):
             input_path = path / Path("input.txt")
             if script_path.exists():
                 if not input_path.exists():
-                    print(f"Downloading input file {input_path}")
+                    print(f"- downloading input file {input_path}")
                     get_auth()
                     with open(input_path, "wb") as f:
                         res = get_input_file(year, day)
@@ -60,13 +60,14 @@ def main(year, day):
 
 def run_day(script_path, input_path):
     try:
+        print(f"> running {script_path}")
         start = time.time()
         res = subprocess.run([sys.executable, script_path.absolute(), input_path.absolute()], check=True, stdout=subprocess.PIPE, timeout=30)
         elapsed = time.time() - start
-        #print(res.stdout)
-        print(f"ran {script_path} in {elapsed:.3f}s")
+        print(res.stdout.decode())
+        print(f"> ran {script_path} in {elapsed:.3f}s")
     except subprocess.TimeoutExpired:
-        print(f"timeout {script_path} after 30s", file=sys.stderr)
+        print(f"> timeout {script_path} after 30s", file=sys.stderr)
 
 
 if __name__ == "__main__":

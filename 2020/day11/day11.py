@@ -27,7 +27,8 @@ def step(grid, rules):
 
 
 if __name__ == "__main__":
-    with open("input.txt") as infile:
+    import sys
+    with open(sys.argv[1]) as infile:
         grid = list("".join(infile.read().splitlines()))
     print("Part 1 ", main(grid, rules=part1_rules))
     print("Part 2 ", main(grid, rules=part2_rules))

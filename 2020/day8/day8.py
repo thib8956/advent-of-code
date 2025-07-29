@@ -43,7 +43,13 @@ def generate_permutation(instructions, line, index):
     return permutation
 
 
-if __name__ == "__main__":
-    instructions = [line.rstrip() for line in open("input.txt")]
+def main(inp):
+    instructions = [line.rstrip() for line in fileinput.input()]
     print("Part 1 : (ip, acc) ", part1(instructions)[1])
     print("Part 2 : (ip, acc) ", part2(instructions))
+
+
+if __name__ == "__main__":
+    import fileinput
+    main(fileinput.input())
+

@@ -3,17 +3,20 @@ import re
 
 
 def main(inp):
-    inp = open(inp).read().split('\n\n')
-    valid_passeports = 0
+    inp = open(inp).read().rstrip().split('\n\n')
+    valid_passeports_1, valid_passeports_2 = 0, 0
     for l in inp:
-        l = re.split('[\n\s]', l)
+        l = re.split(r'[\n\s]', l)
         passeport = dict(p.split(':') for p in l)
         if check_passeport(passeport):
-            valid_passeports += 1
-    print("Valid passeports ", valid_passeports)
+            valid_passeports_1 += 1
+        if check_passeport(passeport, run_validators=True):
+            valid_passeports_2 += 1
+    print("Part 1: valid passeports: ", valid_passeports_1)
+    print("Part 2: valid passeports: ", valid_passeports_2)
 
 
-def check_passeport(passeport):
+def check_passeport(passeport, run_validators=False):
     fields = [
         ('byr', lambda v: 1920 <= int(v) <= 2002), # (Birth Year)
         ('iyr', lambda v: 2010 <= int(v) <= 2020),  # (Issue Year)
@@ -28,7 +31,7 @@ def check_passeport(passeport):
             value = passeport.get(field)
             if value is None:
                 return False
-            elif not validator(value):
+            elif run_validators and not validator(value):
                 return False
     return True
 
@@ -44,4 +47,6 @@ def validate_height(v):
 
 
 if __name__ == "__main__":
-    main('input.txt')
+    import sys
+    main(sys.argv[1])
+

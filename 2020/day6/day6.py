@@ -2,8 +2,7 @@
 from collections import Counter
 
 
-def part1(inp):
-    groups = open(inp).read().split("\n\n")
+def part1(groups):
     number_of_questions = 0
     for group in groups:
         unique_questions = set(group.replace("\n", ""))
@@ -11,11 +10,9 @@ def part1(inp):
     print(number_of_questions)
 
 
-def part2(inp):
+def part2(groups):
     # number of questions for which everyone in a group answered 'yes'
     number_of_questions = 0
-    groups = open(inp).read().split("\n\n")
-
     for group in groups:
         group_length = group.count("\n") + 1
         group_counter = Counter(group.replace("\n", ""))
@@ -25,5 +22,9 @@ def part2(inp):
 
 
 if __name__ == "__main__":
-    part1("input.txt")
-    part2("input.txt")
+    import sys
+    inp = sys.argv[1]
+    groups = open(inp).read().split("\n\n")
+    part1(groups)
+    part2(groups)
+

@@ -3,19 +3,18 @@ import re
 from collections import defaultdict, deque
 
 
-def main(inp):
-    with open(inp) as input_rules:
-        rules = parse_rules(input_rules)
-        reverse_rules = build_reverse_rules(rules)
-        print(part1(reverse_rules))
-        print(part2(rules, "shiny gold"))
+def main(input_rules):
+    rules = parse_rules(input_rules)
+    reverse_rules = build_reverse_rules(rules)
+    print(part1(reverse_rules))
+    print(part2(rules, "shiny gold"))
 
 
 def parse_rules(input_rules):
     rules = {}
     for input_rule in input_rules:
         color, rule = input_rule.split(" bags contain ")
-        rules[color] = {color: int(number) for number, color in re.findall('(\d+) (\w+ \w+)', rule)}
+        rules[color] = {color: int(number) for number, color in re.findall(r'(\d+) (\w+ \w+)', rule)}
     return rules
 
 
@@ -44,4 +43,5 @@ def part2(rules, color):
 
 
 if __name__ == "__main__":
-    main("input.txt")
+    import fileinput
+    main(fileinput.input())

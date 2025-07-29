@@ -2,14 +2,12 @@
 import itertools
 
 
-def part1(inp):
+def part1(lines):
     preamble_size = 25
-    with open(inp) as infile:
-        cleanfile = (int(l.rstrip()) for l in infile)
-        for nums in window(cleanfile, preamble_size + 1):
-            candidate = nums[-1]
-            if not test_number(candidate, nums[:-1]):
-                return candidate
+    for nums in window(lines, preamble_size + 1):
+        candidate = nums[-1]
+        if not test_number(candidate, nums[:-1]):
+            return candidate
     return -1
 
 
@@ -28,8 +26,7 @@ def test_number(num, previous):
     return num in sums
 
 
-def part2(infile, target: int):
-    lines = [int(l.rstrip()) for l in open(infile).readlines()]
+def part2(lines, target: int):
     total = 0
     visited = []
     for index, _ in enumerate(lines):
@@ -44,7 +41,14 @@ def part2(infile, target: int):
         total = 0
 
 
-if __name__ == "__main__":
-    invalid_number = part1("input.txt")
+def main(f):
+    lines = [int(l.rstrip()) for l in f]
+    invalid_number = part1(lines)
     print("part1 ", invalid_number)
-    print("part2 ", part2("input.txt", invalid_number))
+    print("part2 ", part2(lines, invalid_number))
+
+
+if __name__ == "__main__":
+    import fileinput
+    main(fileinput.input())
+

@@ -3,20 +3,18 @@ from itertools import product
 from bisect import bisect
 
 
-def main(filename):
+def main(inp):
     results = {}
-    with open(filename) as inp:
-        for line in inp:
-            boarding_pass = line.rstrip()
-            row, col = parse_boarding_pass(boarding_pass)
-            seat_id = get_seat_id(row, col)
-            results[boarding_pass] = (row, col, seat_id)
+    for line in inp:
+        boarding_pass = line.rstrip()
+        row, col = parse_boarding_pass(boarding_pass)
+        seat_id = get_seat_id(row, col)
+        results[boarding_pass] = (row, col, seat_id)
     part1(results)
     part2(results)
 
 
 def part1(results):
-    # part 1
     max_seat_id = max(x[2] for x in results.values())
     print("Max seat ID: ", max_seat_id)
 
@@ -66,4 +64,5 @@ def get_seat_id(row, col):
 
 
 if __name__ == "__main__":
-    main('input.txt')
+    import fileinput
+    main(fileinput.input())

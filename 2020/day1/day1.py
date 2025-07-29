@@ -17,5 +17,8 @@ def part2(inp):
 
 
 if __name__ == "__main__":
-    with open("input.txt") as f:
-        part2(f.readlines())
+    import fileinput
+    lines = [x for x in fileinput.input()]
+    part1(lines)
+    part2(lines)
+

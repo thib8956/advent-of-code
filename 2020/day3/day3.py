@@ -15,14 +15,12 @@ def check_slope_for_trees(plan, x_right=3, y_down=1):
     return tree_count
 
 
-def part1(inp):
-    plan = [line.rstrip() for line in open(inp)]
+def part1(plan):
     tree_count = check_slope_for_trees(plan)
     print(f"number of trees : {tree_count}")
 
 
-def part2(inp):
-    plan = [line.rstrip() for line in open(inp)]
+def part2(plan):
     slopes = [{"x": 1, "y": 1}, {"x": 3, "y": 1}, {"x": 5, "y": 1}, {"x": 7, "y": 1}, {"x": 1, "y": 2}]
     tree_product = 1
     for slope in slopes:
@@ -31,6 +29,14 @@ def part2(inp):
         print(f"slope {slope} number of trees : {tree_count}")
         print(f"Cumulative product of tress : {tree_product}")
 
+
+def main(f):
+    lines = [line.rstrip() for line in f]
+    part1(lines)
+    part2(lines)
+
+
 if __name__ == "__main__":
-    part1('input.txt')
-    part2('input.txt')
+    import fileinput
+    main(fileinput.input())
+

@@ -18,7 +18,13 @@ def part2(adapters):
     return max(counts.values())
 
 
-if __name__ == "__main__":
-    adapters = sorted(int(l.rstrip()) for l in open("input.txt"))
+def main(f):
+    adapters = sorted(int(l.rstrip()) for l in f)
     print(part1(adapters))
     print(part2(adapters))
+
+
+if __name__ == "__main__":
+    import fileinput
+    main(fileinput.input())
+
