@@ -52,7 +52,7 @@ def generate_floating_addresses(address):
 
 
 if __name__ == "__main__":
-    with open("input.txt") as infile:
-        print(part1(infile))
-        infile.seek(0)
-        print(part2(infile))
+    import fileinput
+    lines = [x for x in fileinput.input()]
+    print(part1(lines))
+    print(part2(lines))

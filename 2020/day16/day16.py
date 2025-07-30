@@ -7,8 +7,8 @@ identify invalid nearby tickets by considering only whether tickets contain valu
 """
 
 
-def main():
-    rules, my_ticket, other_tickets = open("input.txt").read().split("\n\n")
+def main(content):
+    rules, my_ticket, other_tickets = content.split("\n\n")
     rules = parse_fields(rules)
     my_ticket = my_ticket.splitlines()[1]
     other_tickets = other_tickets.splitlines()[1:]
@@ -102,4 +102,7 @@ def remove_item(candidates, item):
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+    with open(sys.argv[1]) as f:
+        main(f.read())
+
