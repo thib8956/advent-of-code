@@ -34,6 +34,8 @@ class Instruction:
         self.modes = [Mode(get_nth_digit(n, opcode)) for n in range(2, 5)]
         self.handler_name = f"handle_{self.operation.name.lower()}"
         self.handler = getattr(self, self.handler_name, self.handle_termination)
+        self.input = 0
+        self.output = 0
 
     def __repr__(self):
         return f"Instruction({self.operation}, {self.modes})"
@@ -60,12 +62,19 @@ class Instruction:
         return ip
 
     def handle_input(self, program, ip):
+        program[program[ip + 1]] = self.input
         ip += 2
-        program[program[ip + 1]] = int(input("Enter ID > "))
         return ip
 
     def handle_output(self, program, ip):
-        print("OUT ", program[program[ip + 1]])
+        param = (
+            program[ip + 1]
+            if self.modes[0] is Mode.IMMEDIATE
+            else program[program[ip + 1]]
+        )
+
+        self.output = param
+        print("OUT ", param)
         ip += 2
         return ip
 
@@ -111,12 +120,15 @@ class Instruction:
         return first, second
 
 
-def interpret_intcode(program, stdin=None):
+def interpret_intcode(program, stdin=[]):
     ip = 0
     while program[ip] != 99:
         opcode = program[ip]
         instruction = Instruction(opcode)
+        if instruction.operation == Operation.INPUT:
+            instruction.input=stdin.pop(0)
         ip = instruction.handle(program, ip)
+    return instruction.output
 
 
 def tests():
@@ -140,24 +152,26 @@ def tests():
         assert (
             result == expected_outputs[i]
         ), f"Expected output for {inp} is {expected_outputs[i]}, but found {result} instead."
+
+    # factorial test
+    fac = [3,29,1007,29,2,28,1005,28,24,2,27,29,27,1001,29,-1,29,1101,0,0,28,1006,28,2,4,27,99,1,0,0]
+    res = interpret_intcode(fac, [4]) 
+    assert res == 24, f"Expected 24 but got {res}"
+
     print("\nAll tests passed.\n")
 
 
-def run_input_program(filename):
-    import os
-
-    SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
-    with open(os.path.join(SCRIPT_DIR, filename)) as inp:
-        print("Start of input program.")
-        memory = [int(x) for x in inp.readline().strip().split(",")]
-        interpret_intcode(memory, 5)
+def run_input_program(inp):
+    print("Start of input program.")
+    memory = [int(x) for x in inp.readline().strip().split(",")]
+    part1 = interpret_intcode(memory[::], [1]) 
+    print("Part 1: ", part1)
+    part2 = interpret_intcode(memory[::], [5])
+    print("Part 2: ", part2)
 
 
 if __name__ == "__main__":
     tests()
-    # a = [3, 12, 6, 12, 15, 1, 13, 14, 13, 4, 13, 99, -1, 0, 1, 9]
-    # b = [3, 3, 1105, -1, 9, 1101, 0, 0, 12, 4, 12, 99, 1]
+    import fileinput
+    run_input_program(fileinput.input())
 
-    # interpret_intcode(b, 0)
-    # interpret_intcode(a, 0)
-    run_input_program("input.txt")
