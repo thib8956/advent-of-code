@@ -3,7 +3,7 @@ from collections import namedtuple
 from enum import Enum
 import logging
 
-logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
+logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.WARN)
 
 
 def get_nth_digit(n, number):
@@ -40,6 +40,7 @@ class Instruction:
         self.handler = getattr(self, self.handler_name, self.handle_termination)
         self.input = None
         self.output = None
+        self.halted = False
 
     def __repr__(self):
         return f"[{self.opcode}] Instruction({self.operation}, {self.modes})"
@@ -102,6 +103,7 @@ class Instruction:
 
     def handle_termination(self, program, ip):
         logging.debug("HALT")
+        self.halted = True
         return ip
 
     def _get_param(self, program, ip, i=0):
@@ -117,16 +119,38 @@ class Instruction:
         return first, second
 
 
-def interpret_intcode(program, stdin=[]):
-    ip = 0
-    out = []
-    while program[ip] != 99:
-        opcode = program[ip]
-        instruction = Instruction(opcode)
+class Interpreter:
+    def __init__(self, program, stdin=[]):
+        self.ip = 0
+        self.stdin = stdin
+        self.stdout = []
+        self.program = program
+        self.halted = False
+
+    def __repr__(self):
+        return f"Interpreter(ip={self.ip}, {self.stdin}, {self.stdout}, {self.halted})"
+
+    def next_instruction(self):
+        instruction = Instruction(self.program[self.ip])
         if instruction.operation == Operation.INPUT:
-            instruction.input=stdin.pop(0)
-        ip = instruction.handle(program, ip)
+            instruction.input = self.stdin.pop(0)
+        self.ip = instruction.handle(self.program, self.ip)
         if instruction.output is not None:
-            out.append(instruction.output)
-    return out
+            self.stdout.append(instruction.output)
+        elif instruction.halted:
+            self.halted = True
+        return instruction
+
+    def interpret(self, break_on_output=True):
+        while instruction := self.next_instruction():
+            if self.halted:
+                break
+            if break_on_output and instruction.output is not None:
+                break
+
+
+def interpret_intcode(program, stdin=[]):
+    interpreter = Interpreter(program, stdin)
+    interpreter.interpret(break_on_output=False)
+    return interpreter.stdout
 
