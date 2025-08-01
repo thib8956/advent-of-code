@@ -6,11 +6,10 @@ from intcode import *
 def run_test(program, expected_mem=None, stdin=[], expected_out=None):
     mem = program[::]
     out = interpret_intcode(mem, stdin=stdin)
-
     if expected_mem is not None:
-        assert expected_mem == mem
+        assert expected_mem == out.memory
     if expected_out is not None:
-        assert expected_out == out
+        assert expected_out == out.stdout
 
 
 def test_day2():
@@ -75,9 +74,38 @@ def test_day5_larger():
     run_test(prog, stdin=[9], expected_out=[1001])
 
 
-def test():
+def test_day9_base():
+    program = [109, 19, 109, 6, 99]
+    interpreter = Interpreter(program)
+    interpreter.base = 2000
+    interpreter.interpret(break_on_output=False)
+    assert interpreter.base == 2025
+
+
+def test_day9_relative():
+    program = [109,6,21001,9,25,1,104,0,99,49]
+    ret = interpret_intcode(program)
+    assert ret.stdout == [74]
+
+
+def test_day9_quine():
+    quine = [109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99]
+    run_test(quine, expected_out=quine)
+
+
+def test_day9_relative():
+    run_test([109, -1, 4, 1, 99], expected_out=[-1])
+    run_test([109, -1, 104, 1, 99], expected_out=[1])
+    run_test([109, -1, 204, 1, 99], expected_out=[109])
+    run_test([109, 1, 9, 2, 204, -6, 99], expected_out=[204])
+    run_test([109, 1, 109, 9, 204, -6, 99], expected_out=[204])
+    run_test([109, 1, 209, -1, 204, -106, 99], expected_out=[204])
+    run_test([109, 1, 3, 3, 204, 2, 99], stdin=[69], expected_out=[69])
+    run_test([109, 1, 203, 2, 204, 2, 99], stdin=[1337], expected_out=[1337])
+
+
+def test_fac():
     # factorial test
     fac = [3,29,1007,29,2,28,1005,28,24,2,27,29,27,1001,29,-1,29,1101,0,0,28,1006,28,2,4,27,99,1,0,0]
     res = interpret_intcode(fac, [4]) 
-    assert res == [24], f"Expected 24 but got {res}"
-
+    assert res.stdout == [24]

@@ -1,9 +1,11 @@
 #! /usr/bin/env python3
-from collections import namedtuple
+from collections import defaultdict
 from enum import Enum
 import logging
+import os
 
-logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.WARN)
+loglevel = (os.getenv("LOGLEVEL") or "WARN").upper()
+logging.basicConfig(format="%(levelname)s:%(message)s", level=loglevel)
 
 
 def get_nth_digit(n, number):
@@ -20,103 +22,135 @@ class Operation(Enum):
     JMP_IF_FALSE = 6
     LESS_THAN = 7
     EQUALS = 8
+    BASE = 9
     TERMINATION = 99
 
 
 class Mode(Enum):
     POSITION = 0
     IMMEDIATE = 1
+    RELATIVE = 2
 
 
 class Instruction:
-    def __init__(self, opcode):
-        self.opcode = opcode
+    def __init__(self, memory, ip, base):
+        self.ip = ip
+        self.memory = memory
+        self.opcode = memory[ip]
         # A B C D E
         # 0 1 1 0 3 
         # A B C modes, DE opcode
-        self.operation = Operation(opcode % 100)
-        self.modes = [Mode(get_nth_digit(n, opcode)) for n in range(2, 5)]
+        self.operation = Operation(self.opcode % 100)
+        self.modes = [Mode(get_nth_digit(n, self.opcode)) for n in range(2, 5)]
         self.handler_name = f"handle_{self.operation.name.lower()}"
-        self.handler = getattr(self, self.handler_name, self.handle_termination)
+        self.handler = getattr(self, self.handler_name, self.handle_unknown)
         self.input = None
         self.output = None
         self.halted = False
+        self.base = base
 
     def __repr__(self):
         return f"[{self.opcode}] Instruction({self.operation}, {self.modes})"
 
-    def handle(self, program, ip):
-        return self.handler(program, ip)
+    def handle(self):
+        return self.handler()
 
-    def handle_addition(self, program, ip):
-        first, second = self._get_parameters(program, ip)
+    def handle_addition(self):
+        first, second = self._get_parameters()
         logging.debug(f"ADD {first} {second}")
         result = first + second
-        # the last mode should *always* be POSITION
-        program[program[ip + 3]] = result
-        ip += 4
-        return ip
+        address = self._get_write_addr(3)
+        logging.debug(f"{address}")
+        self._write(address, result)
+        self.ip += 4
+        return self.ip
 
-    def handle_multiplication(self, program, ip):
-        first, second = self._get_parameters(program, ip)
+    def handle_multiplication(self):
+        first, second = self._get_parameters()
         logging.debug(f"MUL {first} {second}")
         result = first * second
-        # the last mode should *always* be POSITION
-        program[program[ip + 3]] = result
-        ip += 4
-        return ip
+        address = self._get_write_addr(3)
+        self._write(address, result)
+        self.ip += 4
+        return self.ip
 
-    def handle_input(self, program, ip):
-        program[program[ip + 1]] = self.input
-        ip += 2
-        return ip
+    def handle_input(self):
+        address = self._get_write_addr(1)
+        self._write(address, self.input)
+        logging.debug(f"INP {address} {self.input}")
+        self.ip += 2
+        return self.ip
 
-    def handle_output(self, program, ip):
-        self.output = self._get_param(program, ip)
+    def handle_output(self):
+        self.output = self._get_value(1)
         logging.debug(f"OUT {self.output}")
-        ip += 2
-        return ip
+        self.ip += 2
+        return self.ip
 
-    def handle_jmp_if_true(self, program, ip):
-        first, second = self._get_parameters(program, ip)
-        logging.debug(f"JMPT {first} {second}")
-        return second if first != 0 else ip + 3
+    def handle_jmp_if_true(self):
+        first, second = self._get_parameters()
+        logging.debug(f"JMPT {first} {second} {first != 0}")
+        return second if first != 0 else self.ip + 3
 
-    def handle_jmp_if_false(self, program, ip):
-        first, second = self._get_parameters(program, ip)
+    def handle_jmp_if_false(self):
+        first, second = self._get_parameters()
         logging.debug(f"JMPF {first} {second}")
-        return second if first == 0 else ip + 3
+        return second if first == 0 else self.ip + 3
 
-    def handle_less_than(self, program, ip):
-        first, second = self._get_parameters(program, ip)
-        logging.debug(f"LT {first} {second}")
-        program[program[ip + 3]] = int(first < second)
-        ip += 4
-        return ip
+    def handle_less_than(self):
+        first, second = self._get_parameters()
+        logging.debug(f"LT {first} {second} {first < second}")
+        address = self._get_write_addr(3)
+        self._write(address, int(first < second))
+        self.ip += 4
+        return self.ip
 
-    def handle_equals(self, program, ip):
-        first, second = self._get_parameters(program, ip)
+    def handle_equals(self):
+        first, second = self._get_parameters()
         logging.debug(f"EQ {first} {second}")
-        program[program[ip + 3]] = int(first == second)
-        ip += 4
-        return ip
+        address = self._get_write_addr(3)
+        self._write(address, int(first == second))
+        self.ip += 4
+        return self.ip
 
-    def handle_termination(self, program, ip):
+    def handle_termination(self):
         logging.debug("HALT")
         self.halted = True
-        return ip
+        return self.ip
 
-    def _get_param(self, program, ip, i=0):
-        return (
-            program[ip + i + 1]
-            if self.modes[i] is Mode.IMMEDIATE
-            else program[program[ip + i + 1]]
-        )
+    def handle_base(self):
+        self.base += self._get_value(1)
+        logging.debug(f"BASE {self.base}")
+        self.ip += 2
+        return self.ip
 
-    def _get_parameters(self, program, ip):
-        first = self._get_param(program, ip, 0)
-        second = self._get_param(program, ip, 1)
+    def handle_unknown(self):
+        raise ValueError(f"Unknown operation <{self.operation}> @ [{self.ip}]")
+
+    def _get_value(self, offset):
+        value = self.memory[self.ip + offset]
+        match self.modes[offset - 1]:
+            case Mode.POSITION: return self.memory[value] if value < len(self.memory) else 0
+            case Mode.IMMEDIATE: return value
+            case Mode.RELATIVE: return self.memory[value + self.base]
+            case _: raise ValueError(f"{self.modes[i]}")
+
+    def _get_write_addr(self, offset):
+        value = self.memory[self.ip + offset]
+        match self.modes[offset - 1]:
+            case Mode.POSITION: return value
+            case Mode.RELATIVE: return value + self.base
+            case _: raise ValueError(f"{self.modes[i]}")
+
+    def _get_parameters(self):
+        first = self._get_value(1)
+        second = self._get_value(2)
         return first, second
+    
+    def _write(self, address, value):
+        while address >= len(self.memory):
+            self.memory += [0] * len(self.memory)
+        self.memory[address] = value
 
 
 class Interpreter:
@@ -124,17 +158,20 @@ class Interpreter:
         self.ip = 0
         self.stdin = stdin
         self.stdout = []
-        self.program = program
+        self.memory = program[::]
         self.halted = False
+        self.base = 0
 
     def __repr__(self):
-        return f"Interpreter(ip={self.ip}, {self.stdin}, {self.stdout}, {self.halted})"
+        return f"Interpreter(ip={self.ip}, stdin={self.stdin}, stdout={self.stdout}, halted={self.halted})"
 
     def next_instruction(self):
-        instruction = Instruction(self.program[self.ip])
+        instruction = Instruction(self.memory, self.ip, self.base)
         if instruction.operation == Operation.INPUT:
             instruction.input = self.stdin.pop(0)
-        self.ip = instruction.handle(self.program, self.ip)
+        self.ip = instruction.handle()
+        self.base = instruction.base
+        logging.debug(f"IP {self.ip}")
         if instruction.output is not None:
             self.stdout.append(instruction.output)
         elif instruction.halted:
@@ -152,5 +189,5 @@ class Interpreter:
 def interpret_intcode(program, stdin=[]):
     interpreter = Interpreter(program, stdin)
     interpreter.interpret(break_on_output=False)
-    return interpreter.stdout
+    return interpreter
 
