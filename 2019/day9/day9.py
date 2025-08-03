@@ -5,7 +5,7 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).absolute().parent.parent / "intcode"))
 
-from intcode import interpret_intcode, Interpreter
+from intcode import interpret_intcode
 
 
 def main(inp):
