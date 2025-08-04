@@ -60,6 +60,6 @@ if __name__ == "__main__":
     import fileinput
     with fileinput.input() as f:
         main(f, part=1)
-    with fileinput.input() as f:
+    #with fileinput.input() as f:
         #main(f, part=2)  # FIXME unable to run both parts simultaneously
 

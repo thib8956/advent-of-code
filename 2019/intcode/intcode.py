@@ -165,25 +165,26 @@ class Interpreter:
     def __repr__(self):
         return f"Interpreter(ip={self.ip}, stdin={self.stdin}, stdout={self.stdout}, halted={self.halted})"
 
-    def next_instruction(self):
-        instruction = Instruction(self.memory, self.ip, self.base)
-        if instruction.operation == Operation.INPUT:
-            instruction.input = self.stdin.pop(0)
-        self.ip = instruction.handle()
-        self.base = instruction.base
-        logging.debug(f"IP {self.ip}")
-        if instruction.output is not None:
-            self.stdout.append(instruction.output)
-        elif instruction.halted:
-            self.halted = True
-        return instruction
-
-    def interpret(self, break_on_output=True):
-        while instruction := self.next_instruction():
-            if self.halted:
-                break
-            if break_on_output and instruction.output is not None:
-                break
+    def interpret(self, break_on_input=False, break_on_output=True):
+        while not self.halted:
+            # fetch next instruction
+            instruction = Instruction(self.memory, self.ip, self.base)
+            # pause if INP + break on input
+            if instruction.operation == Operation.INPUT:
+                if break_on_input and self.stdin == []:
+                    break
+                else:
+                    instruction.input = self.stdin.pop(0)
+            # execute instruction
+            self.ip = instruction.handle()
+            self.base = instruction.base
+            logging.debug(f"IP {self.ip}")
+            if instruction.output is not None:
+                self.stdout.append(instruction.output)
+                if break_on_output:
+                    break
+            if instruction.halted:
+                self.halted = True
 
 
 def interpret_intcode(program, stdin=[]):
