@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "adventofcode"
+version = "1.0.0"
+
+[project.scripts]
+aoc = "adventofcode.aoc:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+

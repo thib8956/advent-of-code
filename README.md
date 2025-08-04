@@ -4,15 +4,25 @@ My solutions to the [advent of code](https://adventofcode.com/) challenges, writ
 
 ## How to run
 
+### Install project
+
+Run `make install` or
+
+Run from root directory (inside a virtualenv):
+
+```shell
+$ pip install -e .
+```
+
 ### Run a single day
 
 ```shell
-$ python3 run.py <year> <day>
+$ aoc <year> <day>
 ```
 
 ### Run a whole year
 
 ```shell
-$ python3 run.py <year>
+$ aoc <year>
 ```
 

@@ -1,13 +1,10 @@
 import sys
 from pathlib import Path
 
-# TODO replace PYTHONPATH hack with a proper solution, like making intcode an
-# installed module https://stackoverflow.com/a/50194143
 sys.path.append(str(Path(__file__).absolute().parent.parent / "intcode"))
 
 from itertools import cycle, permutations
 from intcode import interpret_intcode, Interpreter
-
 
 def main(inp):
     mem = list(map(int, inp.readline().rstrip().split(",")))
