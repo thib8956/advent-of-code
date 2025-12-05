@@ -14,7 +14,7 @@ def main():
     # Sous-commande run
     run_parser = subparsers.add_parser('run', help='Run an aoc day')
     run_parser.add_argument('year', type=int)
-    run_parser.add_argument('day', type=int)
+    run_parser.add_argument('day', type=int, nargs='?', default=None)
 
     args = parser.parse_args()
 
