@@ -1,10 +1,7 @@
 import sys
 from pathlib import Path
-
-sys.path.append(str(Path(__file__).absolute().parent.parent / "intcode"))
-
 from itertools import cycle, permutations
-from intcode import interpret_intcode, Interpreter
+from adventofcode.intcode import interpret_intcode, Interpreter
 
 def main(inp):
     mem = list(map(int, inp.readline().rstrip().split(",")))

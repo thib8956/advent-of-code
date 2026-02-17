@@ -8,8 +8,7 @@ from pathlib import Path
 from collections import defaultdict, Counter
 from dataclasses import dataclass
 
-sys.path.append(str(Path(__file__).absolute().parent.parent / "intcode"))
-from intcode import interpret_intcode, Interpreter
+from adventofcode.intcode import interpret_intcode, Interpreter
 
 @dataclass
 class State:

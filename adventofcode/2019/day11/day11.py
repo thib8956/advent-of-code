@@ -1,9 +1,4 @@
-# TODO replace PYTHONPATH hack with a proper solution, like making intcode an
-# installed module https://stackoverflow.com/a/50194143
-import sys
-from pathlib import Path
-sys.path.append(str(Path(__file__).absolute().parent.parent / "intcode"))
-from intcode import interpret_intcode, Interpreter
+from adventofcode.intcode import interpret_intcode, Interpreter
 
 
 def paint(program, initial_state):
