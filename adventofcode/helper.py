@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import urllib.request
-import getpass
 import sys
 import time
 import subprocess
@@ -12,13 +11,39 @@ ROOTPATH = Path(os.path.dirname(os.path.realpath(__file__)))
 _auth = None
 
 
+def _load_env_file(env_path: Path) -> dict:
+    env = {}
+    if not env_path.exists():
+        return env
+    with open(env_path) as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            if "=" in line:
+                key, value = line.split("=", 1)
+                env[key.strip()] = value.strip().strip('"').strip("'")
+    return env
+
+
 def get_auth():
     global _auth
-    if _auth is None:
-        if "AUTH" in os.environ:
-            _auth = os.environ["AUTH"]
-        else:
-            _auth = getpass.getpass(prompt="Cookie: ")
+    if _auth is not None:
+        return
+
+    _auth = os.environ.get("AOC_SESSION")
+
+    if not _auth:
+        env_file = ROOTPATH.parent / ".env"
+        env = _load_env_file(env_file)
+        _auth = env.get("AOC_SESSION")
+
+    if not _auth:
+        raise RuntimeError(
+            "AOC_SESSION not set. Either:\n"
+            "  - Set AOC_SESSION environment variable, or\n"
+            "  - Create a .env file in project root with: AOC_SESSION=your_token"
+        )
 
 
 def get_input_file(year, day):
@@ -64,10 +89,14 @@ def run_day(script_path, input_path):
     try:
         print(f"> running {script_path}")
         start = time.time()
-        res = subprocess.run([sys.executable, script_path.absolute(), input_path.absolute()], check=True, stdout=subprocess.PIPE, timeout=30)
+        res = subprocess.run(
+            [sys.executable, script_path.absolute(), input_path.absolute()],
+            check=True,
+            stdout=subprocess.PIPE,
+            timeout=30,
+        )
         elapsed = time.time() - start
         print(res.stdout.decode())
         print(f"> ran {script_path} in {elapsed:.3f}s")
     except subprocess.TimeoutExpired:
         print(f"> timeout {script_path} after 30s", file=sys.stderr)
-
