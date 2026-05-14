@@ -11,10 +11,12 @@ all: venv install
 
 # Create virtual environment if it doesn't exist
 venv:
-	@echo "Creating virtual environment..."
 	@if [ ! -d $(VENV_DIR) ]; then \
+		echo "Creating virtual environment..."; \
 		python3 -m venv $(VENV_DIR); \
 	fi
+	@echo "Source virtualenv with:"
+	@echo "source $(VENV_DIR)/bin/activate"
 
 install: venv
 	@$(PYTHON) -m pip install --upgrade pip
@@ -23,4 +25,3 @@ install: venv
 clean:
 	@echo "Removing virtual environment..."
 	@rm -rf $(VENV_DIR)
-

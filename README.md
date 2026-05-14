@@ -27,12 +27,23 @@ $ pip install -e .
 ### Run a single day
 
 ```shell
-$ aoc <year> <day>
+$ aoc run <year> <day>
 ```
 
 ### Run a whole year
 
 ```shell
-$ aoc <year>
+$ aoc run <year>
 ```
 
+## Run all years
+
+```shell
+$ aoc run all
+```
+
+## Init a new day
+
+```shell
+$ aoc init <year> <day>
+```

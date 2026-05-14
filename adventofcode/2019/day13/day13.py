@@ -1,14 +1,11 @@
 #!/usr/bin/env python3
-# TODO replace PYTHONPATH hack with a proper solution, like making intcode an
-# installed module https://stackoverflow.com/a/50194143
 import sys
 import time
-from itertools import zip_longest
-from pathlib import Path
-from collections import defaultdict, Counter
 from dataclasses import dataclass
+from itertools import zip_longest
 
-from adventofcode.intcode import interpret_intcode, Interpreter
+from adventofcode.intcode import Interpreter, interpret_intcode
+
 
 @dataclass
 class State:
@@ -28,7 +25,7 @@ def grouper(n, iterable):
 
 def part1(program):
     interpreter = interpret_intcode(program)
-    game = { (x, y): tile for x, y, tile in grouper(3, interpreter.stdout) }
+    game = {(x, y): tile for x, y, tile in grouper(3, interpreter.stdout)}
     print("Part 1: ", len([x for x in game.values() if x == 2]))
 
 
@@ -39,11 +36,10 @@ def parse_map(output):
         if (x, y) == (-1, 0):
             score = tile
         else:
-            grid[x,y] = tile
+            grid[x, y] = tile
     paddle = next((k for k, v in grid.items() if v == 3), None)
     ball = next((k for k, v in grid.items() if v == 4), None)
-    bounds = (max(x for x, y in grid.keys()),
-              max(y for x, y in grid.keys()))
+    bounds = (max(x for x, y in grid.keys()), max(y for x, y in grid.keys()))
     return grid, bounds, score, paddle, ball
 
 
@@ -64,7 +60,7 @@ def update_state(state: State, stdout):
     else:
         # merge grid
         for (x, y), v in grid.items():
-            state.grid[x,y] = v
+            state.grid[x, y] = v
     return state
 
 
@@ -77,7 +73,7 @@ def part2(program):
         state = update_state(state, interpreter.stdout)
         if state.stopped:
             break
-        #print_map(state)
+        # print_map(state)
         interpreter.stdout.clear()
         paddle_x, ball_x = state.paddle_pos[0], state.ball_pos[0]
         if paddle_x < ball_x:  # move right
@@ -91,16 +87,16 @@ def part2(program):
 
 def print_map(state):
     clear = "\033[2J"
-    tiles = { 0: " ", 1: "#", 2: "~", 3: "_", 4: "O" }
+    tiles = {0: " ", 1: "#", 2: "~", 3: "_", 4: "O"}
     max_x, max_y = state.bounds
     print(clear)
     for y in range(max_y + 1):
         l = []
         for x in range(max_x + 1):
-            tile = state.grid[x,y]
+            tile = state.grid[x, y]
             l.append(tiles[tile])
         print("".join(l))
-    time.sleep(1/60)
+    time.sleep(1 / 60)
 
 
 def main(inp):
@@ -108,9 +104,10 @@ def main(inp):
     part1(program)
     part2(program)
 
+
 if __name__ == "__main__":
     import sys
+
     infile = sys.argv[1] if len(sys.argv) > 1 else "example.txt"
     with open(infile) as raw_input:
         main(raw_input)
-

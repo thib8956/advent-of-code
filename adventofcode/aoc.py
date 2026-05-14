@@ -1,29 +1,6 @@
 import argparse
-from pathlib import Path
 
-from adventofcode.helper import (
-    MAX_YEAR,
-    MIN_YEAR,
-    get_auth,
-    get_input_file,
-    get_max_day,
-    run,
-    run_all,
-)
-
-TEMPLATE = """#!/usr/bin/env python3
-import fileinput
-
-
-def main(inp):
-    for l in inp:
-        print(l)
-
-
-if __name__ == '__main__':
-    lines = [x.rstrip() for x in fileinput.input()]
-    main(lines)
-"""
+from adventofcode.helper import init, run, run_all
 
 
 def year_or_all(value):
@@ -69,35 +46,7 @@ def main():
 
 
 def handle_init(year, day):
-    if not MIN_YEAR <= year <= MAX_YEAR:
-        print(f"Invalid year: {year}. Must be between {MIN_YEAR} and {MAX_YEAR}.")
-        return
-
-    max_day = get_max_day(year)
-    if not 1 <= day <= max_day:
-        print(f"Invalid day: {day}. Must be between 1 and {max_day}.")
-        return
-
-    root = Path(__file__).parent
-    day_dir = root / str(year) / f"day{day}"
-    day_dir.mkdir(parents=True, exist_ok=True)
-
-    script_path = day_dir / f"day{day}.py"
-    if not script_path.exists():
-        script_path.write_text(TEMPLATE)
-        print(f"Created {script_path}")
-    else:
-        print(f"{script_path} already exists")
-
-    input_path = day_dir / "input.txt"
-    if not input_path.exists():
-        try:
-            get_auth()
-            res = get_input_file(year, day)
-            input_path.write_bytes(res.read())
-            print(f"Downloaded {input_path}")
-        except Exception as e:
-            print(f"Could not download input: {e}", file=__import__("sys").stderr)
+    init(year, day)
 
 
 def handle_run(year, day):

@@ -9,6 +9,22 @@ from pathlib import Path
 MIN_YEAR = 2015
 MAX_YEAR = 2025
 ROOTPATH = Path(os.path.dirname(os.path.realpath(__file__)))
+TEMPLATE = """#!/usr/bin/env python3
+import fileinput
+
+
+def main(inp):
+    for l in inp:
+        print(l)
+
+
+if __name__ == '__main__':
+    lines = [x.rstrip() for x in fileinput.input()]
+    main(lines)
+"""
+
+
+_auth = None
 
 
 def get_max_day(year):
@@ -16,7 +32,16 @@ def get_max_day(year):
     return 25 if year < 2025 else 12
 
 
-_auth = None
+def validate_day(day, year):
+    if not 1 <= day <= get_max_day(year):
+        return f"Invalid day: {day} for year {year}. Must be between 1 and {get_max_day(year)}"
+    return None
+
+
+def validate_year(year):
+    if not MIN_YEAR <= year <= MAX_YEAR:
+        return f"Invalid year: {year}. Must be between {MIN_YEAR} and {MAX_YEAR}"
+    return None
 
 
 def _load_env_file(env_path: Path) -> dict:
@@ -69,25 +94,56 @@ def resolve_paths(year, day):
     return script_path, input_path
 
 
+def init(year, day):
+    if (err := validate_year(year)) is not None:
+        print(err)
+        return
+
+    if (err := validate_day(day, year)) is not None:
+        print(err)
+        return
+
+    path = ROOTPATH / Path(f"{year}/day{day}")
+    path.mkdir(parents=True, exist_ok=True)
+
+    script_path, input_path = resolve_paths(year, day)
+    if script_path.exists():
+        print(f"Script {script_path} already exists.")
+    else:
+        script_path.write_text(TEMPLATE)
+        print(f"Created {script_path}")
+
+    if input_path.exists():
+        print(f"Input {input_path} already exists.")
+    else:
+        try:
+            get_auth()
+            res = get_input_file(year, day)
+            input_path.write_bytes(res.read())
+            print(f"Downloaded {input_path}")
+        except Exception as e:
+            print(f"Could not download input: {e}", file=sys.stderr)
+
+
 def run_all():
-    for year in range(2015, MAX_YEAR + 1):
+    for year in range(MIN_YEAR, MAX_YEAR + 1):
         print(f"Running year {year}")
         run(year, None)
 
 
 def run(year, day):
-    if not MIN_YEAR <= year <= MAX_YEAR:
-        print(f"Invalid year {year}", file=sys.stderr)
+    if (err := validate_year(year)) is not None:
+        print(err, file=sys.stderr)
         exit(1)
 
     if day is not None:
-        if not 1 <= day <= get_max_day(year):
-            print(f"Invalid day {day}", file=sys.stderr)
+        if (err := validate_day(day, year)) is not None:
+            print(err, file=sys.stderr)
             exit(1)
 
         script_path, input_path = resolve_paths(year, day)
         if not script_path.exists():
-            print(f"Invalid day {day}", file=sys.stderr)
+            print(f"Script file {script_path} does not exist", file=sys.stderr)
             exit(1)
         if not input_path.exists():
             print(f"Downloading input file {input_path}")
@@ -98,7 +154,7 @@ def run(year, day):
 
         run_day(script_path, input_path)
     else:
-        for day in range(1, 26):
+        for day in range(1, get_max_day(year) + 1):
             script_path, input_path = resolve_paths(year, day)
             if script_path.exists():
                 if not input_path.exists():
