@@ -1,12 +1,20 @@
 #!/usr/bin/env python3
-import urllib.request
+import os
+import subprocess
 import sys
 import time
-import subprocess
-import os
+import urllib.request
 from pathlib import Path
 
+MIN_YEAR = 2015
+MAX_YEAR = 2025
 ROOTPATH = Path(os.path.dirname(os.path.realpath(__file__)))
+
+
+def get_max_day(year):
+    # starting with 2025, advent of code only has 12 days
+    return 25 if year < 2025 else 12
+
 
 _auth = None
 
@@ -54,11 +62,30 @@ def get_input_file(year, day):
     return res
 
 
+def resolve_paths(year, day):
+    path = ROOTPATH / Path(f"{year}/day{day}")
+    script_path = path / Path(f"day{day}.py")
+    input_path = path / Path("input.txt")
+    return script_path, input_path
+
+
+def run_all():
+    for year in range(2015, MAX_YEAR + 1):
+        print(f"Running year {year}")
+        run(year, None)
+
+
 def run(year, day):
+    if not MIN_YEAR <= year <= MAX_YEAR:
+        print(f"Invalid year {year}", file=sys.stderr)
+        exit(1)
+
     if day is not None:
-        path = ROOTPATH / Path(f"{year}/day{day}")
-        script_path = path / Path(f"day{day}.py")
-        input_path = path / Path("input.txt")
+        if not 1 <= day <= get_max_day(year):
+            print(f"Invalid day {day}", file=sys.stderr)
+            exit(1)
+
+        script_path, input_path = resolve_paths(year, day)
         if not script_path.exists():
             print(f"Invalid day {day}", file=sys.stderr)
             exit(1)
@@ -72,9 +99,7 @@ def run(year, day):
         run_day(script_path, input_path)
     else:
         for day in range(1, 26):
-            path = ROOTPATH / Path(f"{year}/day{day}")
-            script_path = path / Path(f"day{day}.py")
-            input_path = path / Path("input.txt")
+            script_path, input_path = resolve_paths(year, day)
             if script_path.exists():
                 if not input_path.exists():
                     print(f"- downloading input file {input_path}")
