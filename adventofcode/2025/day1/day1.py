@@ -10,7 +10,6 @@ def part1(lines):
     print("Part 1: ", cnt)
 
 
-
 def part2(lines):
     pos = 50
     cnt = 0
@@ -27,17 +26,17 @@ def part2(lines):
         if amount >= k0:
             cnt += 1 + (amount - k0) // 100
         pos = (pos + direction * amount) % 100
-        print(rotation, pos, cnt)
+        # print(rotation, pos, cnt)
     print("Part 2: ", cnt)
 
 
 if __name__ == "__main__":
     import sys
+
     infile = sys.argv[1]
-    
+
     with open(infile) as f:
         lines = f.readlines()
         lines = [x.rstrip() for x in lines]
         part1(lines)
         part2(lines)
-
