@@ -28,7 +28,10 @@ def can_reach(pos, obstacles, grid_size):
     return False
 
 
-def search(obstacles, start, goal, grid_size):  # could just use bfs?
+def search(obstacles, start, goal, grid_size):
+    """
+    Dijkstra's algorithm. Could as well use BFS since step costs are uniform. (n = Node(new_pos, node.cost + 1))
+    """
     queue = [Node(start)]
     visited = set()
     i = 0
