@@ -14,12 +14,13 @@ import fileinput
 
 
 def main(inp):
-    for l in inp:
-        print(l)
+    for line in inp:
+        print(line)
 
 
 if __name__ == '__main__':
-    lines = [x.rstrip() for x in fileinput.input()]
+    with fileinput.input() as f:
+        lines = [x.rstrip() for x in fileinput.input()]
     main(lines)
 """
 
