@@ -45,8 +45,7 @@ def parse_tree(inp):
     return adj
 
 
-def main(inp):
-    adj = parse_tree(inp)
+def calculate_sizes(adj):
     # DFS the tree to calculate size of each directory
     stack = [((), adj[()])]
     visited = {()}
@@ -58,26 +57,42 @@ def main(inp):
             if isinstance(child, tuple):  # file
                 name, size = child
                 sizes[path] += int(size)
-                print(f"file {name} {size}")
+                # print(f"file {name} {size}")
             else:  # dir
                 child_path = (*path, child)
-                print(f"dir {child_path}")
+                # print(f"dir {child_path}")
                 if child_path not in visited:
                     visited.add(child_path)
                     stack.append((child_path, adj[child_path]))
                     dirs.add(child_path)
-
     # Add up sizes of subdirectories to parent directories
     for path in sorted(dirs, key=len, reverse=True):
         if path:  # not root
             parent = path[:-1]
             sizes[parent] += sizes[path]
+    return sizes
 
+
+def part1(sizes):
     total = 0
     for size in sizes.values():
         if size <= 100000:
             total += size
-    print(total)
+    return total
+
+
+def part2(sizes):
+    total_space = sizes[()]  # size of root
+    needed_space = 30000000 - (70000000 - total_space)
+    candidates = [size for size in sizes.values() if size >= needed_space]
+    return min(candidates)
+
+
+def main(inp):
+    adj = parse_tree(inp)
+    sizes = calculate_sizes(adj)
+    print("Part 1: ", part1(sizes))
+    print("Part 2: ", part2(sizes))
 
 
 if __name__ == "__main__":
