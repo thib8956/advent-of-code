@@ -1,6 +1,6 @@
 import argparse
 
-from adventofcode.helper import init, run, run_all
+from adventofcode.helper import init, run, run_all, validate_year
 
 
 def year_or_all(value):
@@ -9,12 +9,10 @@ def year_or_all(value):
         return value
     try:
         year = int(value)
-        if 2015 <= year <= 2025:
+        if (err := validate_year(year)) is None:
             return year
         else:
-            raise argparse.ArgumentTypeError(
-                f"Year must be between 2015 and 2025. Got: {year}"
-            )
+            raise argparse.ArgumentTypeError(err)
     except ValueError:
         raise argparse.ArgumentTypeError(
             f"Invalid value: {value}. Must be an integer or 'all'."

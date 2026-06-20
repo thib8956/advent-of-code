@@ -20,7 +20,7 @@ def main(inp):
 
 if __name__ == '__main__':
     with fileinput.input() as f:
-        lines = [x.rstrip() for x in fileinput.input()]
+        lines = [x.rstrip() for x in f]
     main(lines)
 """
 
@@ -169,16 +169,22 @@ def run(year, day):
 
 def run_day(script_path, input_path):
     try:
-        print(f"> running {script_path}")
+        print(f"> running {script_path}\n")
         start = time.time()
         res = subprocess.run(
             [sys.executable, script_path.absolute(), input_path.absolute()],
-            check=True,
+            check=False,
             stdout=subprocess.PIPE,
             timeout=30,
         )
         elapsed = time.time() - start
-        print(res.stdout.decode())
-        print(f"> ran {script_path} in {elapsed:.3f}s")
+        if res.returncode != 0:
+            print(
+                f"> {script_path} failed with exit code {res.returncode}",
+                file=sys.stderr,
+            )
+        else:
+            print(res.stdout.decode())
+            print(f"\n> ran {script_path} in {elapsed:.3f}s")
     except subprocess.TimeoutExpired:
         print(f"> timeout {script_path} after 30s", file=sys.stderr)
