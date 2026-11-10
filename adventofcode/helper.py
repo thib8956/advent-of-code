@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import re
 import subprocess
 import sys
 import time
@@ -153,7 +154,7 @@ def run(year, day):
                 res = get_input_file(year, day)
                 f.write(res.read())
 
-        run_day(script_path, input_path)
+        run_day(script_path, input_path, print_full_output=True)
     else:
         for day in range(1, get_max_day(year) + 1):
             script_path, input_path = resolve_paths(year, day)
@@ -167,7 +168,7 @@ def run(year, day):
                 run_day(script_path, input_path)
 
 
-def run_day(script_path, input_path):
+def run_day(script_path, input_path, print_full_output=False):
     try:
         print(f"> running {script_path}\n")
         start = time.time()
@@ -184,7 +185,12 @@ def run_day(script_path, input_path):
                 file=sys.stderr,
             )
         else:
-            print(res.stdout.decode())
+            if print_full_output:
+                print(res.stdout.decode())
+            else:
+                res = re.findall(rb"Part [12].*\n", res.stdout)
+                for item in res:
+                    print(item.decode(), end="")
             print(f"\n> ran {script_path} in {elapsed:.3f}s")
     except subprocess.TimeoutExpired:
         print(f"> timeout {script_path} after 30s", file=sys.stderr)
