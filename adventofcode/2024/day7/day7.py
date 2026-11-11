@@ -30,7 +30,7 @@ if __name__ == "__main__":
     import sys
     infile = sys.argv[1] if 1 < len(sys.argv) else "example.txt"
     with open(infile) as f:
-        data = [l.rstrip().split(": ") for l in f.readlines()]
+        data = [l.rstrip().split(": ") for l in f]
         data = [(int(a), tuple(map(int, b.split(" ")))) for a, b in data]
         main(data)
 

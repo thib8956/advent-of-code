@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from itertools import count, takewhile
+from itertools import takewhile
 
 directions = (
     (-1, -1),

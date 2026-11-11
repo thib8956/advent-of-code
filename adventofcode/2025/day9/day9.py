@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import fileinput
-from sys import argv
 
 
 def area(a, b):
@@ -38,8 +37,7 @@ def generate_ppm(inp, scale=100):
     with open("test.ppm", "w") as f:
         f.write(f"P3\n{width} {height}\n255\n")
         for row in arr:
-            for cell in row:
-                f.write(f"{cell * 255} 0 0 ")
+            f.writelines(f"{cell * 255} 0 0 " for cell in row)
             f.write("\n")
 
     print("PPM file written to test.ppm")

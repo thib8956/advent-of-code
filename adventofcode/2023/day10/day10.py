@@ -1,6 +1,5 @@
-from typing import Dict, List, Set, Tuple
-from dataclasses import dataclass
 from collections import defaultdict
+from dataclasses import dataclass
 from enum import Enum
 
 
@@ -42,7 +41,7 @@ PIPES = {
 PIPES_REVERSE_LOOKUP = {v: k for k,v in PIPES.items()}
 
 
-def find_start_position(grid: List[str]) -> Vec2d:
+def find_start_position(grid: list[str]) -> Vec2d:
     for y, row in enumerate(grid):
         for x, c in enumerate(row):
             if c == "S":
@@ -50,7 +49,7 @@ def find_start_position(grid: List[str]) -> Vec2d:
     raise RuntimeError("The start position was not found")
 
 
-def update_start_symbol(grid: List[str], start_pos: Vec2d):
+def update_start_symbol(grid: list[str], start_pos: Vec2d):
     """
     Updates the map by replacing the start symbol "S" with its actual corresponding pipe
     """
@@ -82,7 +81,7 @@ def update_start_symbol(grid: List[str], start_pos: Vec2d):
     grid[start_pos.y] = grid[start_pos.y].replace("S", pipe)
 
 
-def parse_graph(grid: List[str]) -> Dict[Vec2d, List[Vec2d]]:
+def parse_graph(grid: list[str]) -> dict[Vec2d, list[Vec2d]]:
     graph = defaultdict(list)
 
     for y, row in enumerate(grid):
@@ -95,7 +94,7 @@ def parse_graph(grid: List[str]) -> Dict[Vec2d, List[Vec2d]]:
     return graph
 
 
-def traverse_graph(graph, start_pos) -> Tuple[int, Set[Vec2d]]:
+def traverse_graph(graph, start_pos) -> tuple[int, set[Vec2d]]:
     """
     traverse the graph using BFS, return the path and the
     find the length of the longest path in the graph
@@ -154,5 +153,5 @@ if __name__ == "__main__":
     infile = sys.argv[1]
     
     with open(infile) as f:
-        lines = [l.rstrip() for l in f.readlines()]
+        lines = [l.rstrip() for l in f]
         main(lines)

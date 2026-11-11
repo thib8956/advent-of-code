@@ -47,16 +47,16 @@ def part2(grid):
             if grid[y+1][x+1] != "A":  # center letter is always "A"
                 continue
             # M.S / .A. / M.S
-            if grid[y][x] == "M" and grid[y][x+2] == "S" and grid[y+2][x] == "M" and grid[y+2][x+2] == "S":
+            if row[x] == "M" and row[x+2] == "S" and grid[y+2][x] == "M" and grid[y+2][x+2] == "S":
                 count += 1
             # M.M / .A. / S.S
-            if grid[y][x] == "M" and grid[y][x+2] == "M" and grid[y+2][x] == "S" and grid[y+2][x+2] == "S":
+            if row[x] == "M" and row[x+2] == "M" and grid[y+2][x] == "S" and grid[y+2][x+2] == "S":
                 count += 1
             # S.M / .A. / S.M
-            if grid[y][x] == "S" and grid[y][x+2] == "M" and grid[y+2][x] == "S" and grid[y+2][x+2] == "M":
+            if row[x] == "S" and row[x+2] == "M" and grid[y+2][x] == "S" and grid[y+2][x+2] == "M":
                 count += 1
             # S.S / .A. / M.M
-            if grid[y][x] == "S" and grid[y][x+2] == "S" and grid[y+2][x] == "M" and grid[y+2][x+2] == "M":
+            if row[x] == "S" and row[x+2] == "S" and grid[y+2][x] == "M" and grid[y+2][x+2] == "M":
                 count += 1
     print("Part 2: ", count)
 
@@ -66,7 +66,7 @@ if __name__ == "__main__":
     import sys
     infile = sys.argv[1] if 1 < len(sys.argv) else "example.txt"
     with open(infile) as f:
-        grid = [l.rstrip() for l in f.readlines()]
+        grid = [l.rstrip() for l in f]
         part1(grid)
         part2(grid)
 

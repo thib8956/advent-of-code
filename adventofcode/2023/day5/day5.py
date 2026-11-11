@@ -27,8 +27,7 @@ def part2(sections):
         print(f"calculate_for_subseeds(subseeds len={len(subseeds)})")
         res = calculate_for_subseeds(subseeds, sections)
         mini = min(res)
-        if mini < min_seed:
-            min_seed = mini
+        min_seed = min(min_seed, mini)
     
     print(f"Part 2 {min_seed}")
 
@@ -58,8 +57,8 @@ def parse_input(infile):
 
 
 if __name__ == "__main__":
-    import sys
     import os
+    import sys
     SCRIPTPATH = os.path.dirname(os.path.realpath(__file__))
 
     infile = next(iter(sys.argv[1:]), None)

@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from heapq import heappop, heappush
 
-
 DIRECTIONS = {
     ">": 1 + 0j,  # EAST
     "v": 0 + 1j,  # SOUTH
@@ -27,9 +26,9 @@ def find_start_and_goal(grid):
     start, goal = None, None
     for y, row in enumerate(grid):
         for x, _ in enumerate(row):
-            if grid[y][x] == "S":
+            if row[x] == "S":
                 start = complex(x, y)
-            elif grid[y][x] == "E":
+            elif row[x] == "E":
                 goal = complex(x, y)
     return start, goal
 
@@ -112,6 +111,6 @@ if __name__ == "__main__":
     import sys
     infile = sys.argv[1] if 1 < len(sys.argv) else "example.txt"
     with open(infile) as f:
-        grid = [list(l.rstrip()) for l in f.readlines()]
+        grid = [list(l.rstrip()) for l in f]
         main(grid)
 

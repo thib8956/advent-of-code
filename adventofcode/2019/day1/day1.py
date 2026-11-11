@@ -25,9 +25,7 @@ def test_part2():
     expected = (2, 966, 50346)
     for i, inp in enumerate(inputs):
         result = calculate_fuel_iterative(inp)
-        assert result == expected[i], "Result for {} should be {}, was {}".format(
-            inp, expected[i], result
-        )
+        assert result == expected[i], f"Result for {inp} should be {expected[i]}, was {result}"
     print("All tests passed for part 2.")
 
 

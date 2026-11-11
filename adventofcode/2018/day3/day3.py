@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 import re
-import itertools
-from dataclasses import dataclass
 from collections import defaultdict
+from dataclasses import dataclass
 
 
 @dataclass
@@ -35,7 +34,7 @@ def main(inp):
                 regions[x, y].add(id_)
 
     total = sum(len(x) > 1 for x in regions.values())
-    print(f"Part 1: ", total)
+    print("Part 1: ", total)
 
     all_ids = set()
     overlapping_ids = set()
@@ -51,5 +50,5 @@ if __name__ == '__main__':
     import sys
     infile = sys.argv[1] if len(sys.argv) > 1 else "example.txt"
     with open(infile) as inp:
-        main([l.rstrip() for l in inp.readlines()])
+        main([l.rstrip() for l in inp])
 

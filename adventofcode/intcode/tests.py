@@ -1,5 +1,4 @@
 # Run with pytest
-import logging
 from intcode import *
 
 
@@ -82,18 +81,13 @@ def test_day9_base():
     assert interpreter.base == 2025
 
 
-def test_day9_relative():
-    program = [109,6,21001,9,25,1,104,0,99,49]
-    ret = interpret_intcode(program)
-    assert ret.stdout == [74]
-
-
 def test_day9_quine():
     quine = [109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99]
     run_test(quine, expected_out=quine)
 
 
 def test_day9_relative():
+    run_test([109,6,21001,9,25,1,104,0,99,49], expected_out=[74])
     run_test([109, -1, 4, 1, 99], expected_out=[-1])
     run_test([109, -1, 104, 1, 99], expected_out=[1])
     run_test([109, -1, 204, 1, 99], expected_out=[109])
@@ -107,5 +101,5 @@ def test_day9_relative():
 def test_fac():
     # factorial test
     fac = [3,29,1007,29,2,28,1005,28,24,2,27,29,27,1001,29,-1,29,1101,0,0,28,1006,28,2,4,27,99,1,0,0]
-    res = interpret_intcode(fac, [4]) 
+    res = interpret_intcode(fac, [4])
     assert res.stdout == [24]

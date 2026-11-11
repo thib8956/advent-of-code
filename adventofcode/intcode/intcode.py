@@ -1,8 +1,7 @@
 #! /usr/bin/env python3
-from collections import defaultdict
-from enum import Enum
 import logging
 import os
+from enum import Enum
 
 loglevel = (os.getenv("LOGLEVEL") or "WARN").upper()
 logging.basicConfig(format="%(levelname)s:%(message)s", level=loglevel)
@@ -38,7 +37,7 @@ class Instruction:
         self.memory = memory
         self.opcode = memory[ip]
         # A B C D E
-        # 0 1 1 0 3 
+        # 0 1 1 0 3
         # A B C modes, DE opcode
         self.operation = Operation(self.opcode % 100)
         self.modes = [Mode(get_nth_digit(n, self.opcode)) for n in range(2, 5)]
@@ -140,13 +139,13 @@ class Instruction:
         match self.modes[offset - 1]:
             case Mode.POSITION: return value
             case Mode.RELATIVE: return value + self.base
-            case _: raise ValueError(f"{self.modes[i]}")
+            case _: raise ValueError(f"{self.modes[offset - 1]}")
 
     def _get_parameters(self):
         first = self._get_value(1)
         second = self._get_value(2)
         return first, second
-    
+
     def _write(self, address, value):
         while address >= len(self.memory):
             self.memory += [0] * len(self.memory)
@@ -191,4 +190,3 @@ def interpret_intcode(program, stdin=[]):
     interpreter = Interpreter(program, stdin)
     interpreter.interpret(break_on_output=False)
     return interpreter
-

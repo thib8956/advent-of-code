@@ -10,7 +10,7 @@ def calculate_wins(data):
     total = 1
     for time, record in data:
         ways = 0
-        for n in range(0, time+1):
+        for n in range(time+1):
             speed = n
             distance = (time-n) * speed
             if distance > record:

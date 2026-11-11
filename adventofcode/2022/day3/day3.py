@@ -1,5 +1,5 @@
-from itertools import zip_longest
 from functools import reduce
+from itertools import zip_longest
 from operator import and_
 
 

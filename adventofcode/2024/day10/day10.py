@@ -63,6 +63,6 @@ if __name__ == "__main__":
     import sys
     infile = sys.argv[1] if 1 < len(sys.argv) else "example.txt"
     with open(infile) as f:
-        grid = [list(map(int, list(l.rstrip()))) for l in f.readlines()]
+        grid = [list(map(int, list(l.rstrip()))) for l in f]
         main(grid)
 

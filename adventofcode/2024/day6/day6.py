@@ -1,6 +1,5 @@
-from itertools import cycle
 from dataclasses import dataclass
-from pprint import pprint
+from itertools import cycle
 
 
 @dataclass(frozen=True)
@@ -75,6 +74,6 @@ if __name__ == "__main__":
     import sys
     infile = sys.argv[1] if 1 < len(sys.argv) else "example.txt"
     with open(infile) as f:
-        grid = [list(l.rstrip()) for l in f.readlines()]
+        grid = [list(l.rstrip()) for l in f]
         main(grid)
 

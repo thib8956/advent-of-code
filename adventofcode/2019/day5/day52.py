@@ -93,7 +93,6 @@ class HaltInstruction(Instruction):
 
     def execute(self, intcode, arguments):
         intcode.halted = True
-        return None
 
 
 class Argument:

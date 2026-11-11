@@ -1,6 +1,6 @@
 def parse_input(infile):
     with open(infile) as f:
-        return [[int(x) for x in l.strip().split()] for l in f.readlines()]
+        return [[int(x) for x in l.strip().split()] for l in f]
 
 
 def process_line(line):
@@ -25,8 +25,8 @@ def solve(data):
 
 
 if __name__ == "__main__":
-    import sys
     import os
+    import sys
     SCRIPTPATH = os.path.dirname(os.path.realpath(__file__))
     infile = sys.argv[1] if len(sys.argv) == 2 else "example.txt"
     data = parse_input(os.path.join(SCRIPTPATH, infile))

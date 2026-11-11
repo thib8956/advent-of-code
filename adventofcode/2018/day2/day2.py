@@ -17,7 +17,7 @@ def main(lines):
         c = Counter(line)
         total_twice += 1 if [k for k,v in c.items() if v == 2] != [] else 0
         total_thrice += 1 if [k for k,v in c.items() if v == 3] != [] else 0
-    print(f"Part 1: ", total_twice * total_thrice)
+    print("Part 1: ", total_twice * total_thrice)
 
     part2(lines)
 
@@ -26,5 +26,5 @@ if __name__ == "__main__":
     import sys
     infile = sys.argv[1] if len(sys.argv) > 1 else "example.txt"
     with open(infile) as inp:
-        main([l.rstrip() for l in inp.readlines()])
+        main([l.rstrip() for l in inp])
 

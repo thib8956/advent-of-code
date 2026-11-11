@@ -1,5 +1,6 @@
 from collections import defaultdict
 
+
 def main(infile):
     points = defaultdict(int)
     with open(infile) as f:

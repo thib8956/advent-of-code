@@ -9,7 +9,7 @@ DIRECTIONS = {
 def find_start_pos(grid):
     for y, row in enumerate(grid):
         for x, _ in enumerate(row):
-            if grid[y][x] == "@":
+            if row[x] == "@":
                 return complex(x, y)
 
 
@@ -69,7 +69,7 @@ def calculate_gps_coords(grid):
     total = 0
     for y, row in enumerate(grid):
         for x, _ in enumerate(row):
-            if grid[y][x] == "O":
+            if row[x] == "O":
                 total += 100*y + x
     return total
 

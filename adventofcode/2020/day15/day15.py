@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-from collections import defaultdict
 from array import array
+from collections import defaultdict
 
 
 def main(initial_suite, max_iteration):

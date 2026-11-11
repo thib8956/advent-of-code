@@ -1,6 +1,5 @@
 from dataclasses import dataclass
-from heapq import heappush, heappop
-
+from heapq import heappop, heappush
 
 DIRECTIONS = (
     1 + 0j,  # EAST

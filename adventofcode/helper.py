@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import os
 import re
 import subprocess
@@ -10,8 +9,7 @@ from pathlib import Path
 MIN_YEAR = 2015
 MAX_YEAR = 2025
 ROOTPATH = Path(os.path.dirname(os.path.realpath(__file__)))
-TEMPLATE = """#!/usr/bin/env python3
-import fileinput
+TEMPLATE = """import fileinput
 
 
 def main(inp):

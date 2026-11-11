@@ -58,7 +58,7 @@ def part2(inp):
 
 def main(input_file):
     with open(input_file) as f:
-        entries = [x.rstrip() for x in f.readlines()]
+        entries = [x.rstrip() for x in f]
         part1(entries)
         part2(entries)
 

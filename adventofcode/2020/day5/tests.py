@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 from day5 import *
 
+
 def tests():
     inputs = {
         "FBFBBFFRLR": (44, 5, 357),

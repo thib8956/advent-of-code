@@ -1,5 +1,6 @@
 from collections import OrderedDict
 
+
 def part1(crabs):
     moves = OrderedDict()
     for pos in range(min(crabs), max(crabs) + 1):

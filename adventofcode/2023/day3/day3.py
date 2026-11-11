@@ -1,9 +1,9 @@
-from typing import Tuple, List, Set
 from dataclasses import dataclass
+
 
 @dataclass(frozen=True)
 class Item:
-    pos: Tuple[int, int]
+    pos: tuple[int, int]
     symbol: str
 
 
@@ -12,8 +12,8 @@ def browse_schema(schema):
     buf = []
     max_row, max_col = len(schema), len(schema[0])
 
-    symbols: List[Tuple[Item, Set[Item]]] = []
-    numbers: List[Item] = []
+    symbols: list[tuple[Item, set[Item]]] = []
+    numbers: list[Item] = []
 
     for y in range(max_row):
         for x in range(max_col):
@@ -61,13 +61,13 @@ def part2(symbols, numbers):
             
 
 
-def is_engine_part(neighbors: List[Item]) -> bool:
+def is_engine_part(neighbors: list[Item]) -> bool:
     # get list of symbols (not '.', \n or a number)
     symbols = filter(lambda x: not x.symbol.isnumeric() and not x.symbol in (".", "\n"), neighbors)
     return next(symbols, None) is not None
 
 
-def get_neighbors(pos: Tuple[int, int], length: int,  schema: List[List[str]]) -> List[Item]:
+def get_neighbors(pos: tuple[int, int], length: int,  schema: list[list[str]]) -> list[Item]:
     x, y = pos
     start_x = x - length
     neighbors = [get_neighbors_of((x, y), schema) for x in range(start_x, x)]
@@ -75,10 +75,10 @@ def get_neighbors(pos: Tuple[int, int], length: int,  schema: List[List[str]]) -
     return neighbors
 
 
-def get_neighbors_of(pos: Tuple[int, int], schema: List[List[str]]) -> List[Item]:
+def get_neighbors_of(pos: tuple[int, int], schema: list[list[str]]) -> list[Item]:
     max_row, max_col = len(schema), len(schema[0])
     x, y = pos
-    neighbors: List[Item] = []
+    neighbors: list[Item] = []
     
     # top
     if y-1 >= 0:
@@ -112,5 +112,5 @@ if __name__ == "__main__":
     import sys
     infile = sys.argv[1]
     with open(infile) as f:
-        schema = [[c for c in line] for line in f.readlines()]
+        schema = [[c for c in line] for line in f]
         browse_schema(schema)

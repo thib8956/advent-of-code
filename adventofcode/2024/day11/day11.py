@@ -1,5 +1,6 @@
 from collections import Counter
 
+
 def main(data):
     part1 = run(data, 25)
     print("Part 1: ", part1)

@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from collections import defaultdict
 
 
 @dataclass(frozen=True)
@@ -78,6 +77,6 @@ if __name__ == "__main__":
     import sys
     infile = sys.argv[1] if 1 < len(sys.argv) else "example.txt"
     with open(infile) as f:
-        grid = [l.rstrip() for l in f.readlines()]
+        grid = [l.rstrip() for l in f]
         main(grid)
 

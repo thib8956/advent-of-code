@@ -1,7 +1,7 @@
-import sys
-from pathlib import Path
 from itertools import cycle, permutations
-from adventofcode.intcode import interpret_intcode, Interpreter
+
+from adventofcode.intcode import Interpreter, interpret_intcode
+
 
 def main(inp):
     mem = list(map(int, inp.readline().rstrip().split(",")))

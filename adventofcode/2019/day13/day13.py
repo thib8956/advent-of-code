@@ -39,7 +39,7 @@ def parse_map(output):
             grid[x, y] = tile
     paddle = next((k for k, v in grid.items() if v == 3), None)
     ball = next((k for k, v in grid.items() if v == 4), None)
-    bounds = (max(x for x, y in grid.keys()), max(y for x, y in grid.keys()))
+    bounds = (max(x for x, y in grid), max(y for x, y in grid))
     return grid, bounds, score, paddle, ball
 
 

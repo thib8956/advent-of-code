@@ -1,1 +1,1 @@
-from .intcode import interpret_intcode, Interpreter, Operation, Mode
+from .intcode import Interpreter, Mode, Operation, interpret_intcode

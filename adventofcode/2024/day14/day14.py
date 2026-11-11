@@ -1,5 +1,5 @@
-from math import prod
 from collections import Counter
+from math import prod
 
 
 def parse_bots(lines):

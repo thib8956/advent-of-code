@@ -54,9 +54,7 @@ def tests():
     expected = (6, 159, 135)
     for i, inp in enumerate(inputs):
         result = find_min_distance(inp[0], inp[1])
-        assert result == expected[i], "Result for {} should be {}, was {}".format(
-            inp, expected[i], result
-        )
+        assert result == expected[i], f"Result for {inp} should be {expected[i]}, was {result}"
     
     # Part 2
     # expected number of steps
@@ -64,9 +62,7 @@ def tests():
     print("All tests passed.")
     for i, inp in enumerate(inputs):
         result = find_least_steps(inp[0], inp[1])
-        assert result == expected_part2[i], "Result for {} should be {}, was {}".format(
-            inp, expected_part2[i], result
-        )
+        assert result == expected_part2[i], f"Result for {inp} should be {expected_part2[i]}, was {result}"
 
 if __name__ == "__main__":
     tests()

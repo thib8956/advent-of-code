@@ -1,4 +1,5 @@
-from collections import defaultdict, Counter
+from collections import Counter, defaultdict
+
 
 def calculate_fishes(inp, days):
     fishes = Counter(inp)

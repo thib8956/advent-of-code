@@ -29,9 +29,7 @@ def check_passeport(passeport, run_validators=False):
     ]
     for field, validator in fields:
             value = passeport.get(field)
-            if value is None:
-                return False
-            elif run_validators and not validator(value):
+            if value is None or run_validators and not validator(value):
                 return False
     return True
 

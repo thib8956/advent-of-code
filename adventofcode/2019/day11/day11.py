@@ -1,4 +1,4 @@
-from adventofcode.intcode import interpret_intcode, Interpreter
+from adventofcode.intcode import Interpreter
 
 
 def paint(program, initial_state):

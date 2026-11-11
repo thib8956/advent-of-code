@@ -1,9 +1,8 @@
 #! /usr/bin/env python3
-from collections import namedtuple
-from enum import Enum
 import logging
+from enum import Enum
 
-logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.WARN)
+logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.WARNING)
 
 
 def get_nth_digit(n, number):

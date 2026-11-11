@@ -1,6 +1,7 @@
-import re
 import math
+import re
 from itertools import cycle
+
 
 def parse_input(infile):
     with open(infile) as f:
@@ -63,8 +64,8 @@ def part2(directions, nodes):
 
 
 if __name__ == "__main__":
-    import sys
     import os
+    import sys
     SCRIPTPATH = os.path.dirname(os.path.realpath(__file__))
     infile = sys.argv[1] if len(sys.argv) == 2 else "example.txt"
 

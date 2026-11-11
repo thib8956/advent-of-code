@@ -1,4 +1,3 @@
-from collections import defaultdict
 
 
 def path(graph, start, goal):

@@ -1,9 +1,8 @@
-import time
-import math
 import cmath
-from itertools import combinations
-from collections import defaultdict
+import math
 from bisect import insort
+from collections import defaultdict
+from itertools import combinations
 
 
 def dist(a, b):

@@ -2,7 +2,7 @@ from collections import Counter
 
 
 def main(lines):
-    firsts, seconds = list(sorted(x[0] for x in lines)), list(sorted(x[1] for x in lines))
+    firsts, seconds = sorted(x[0] for x in lines), sorted(x[1] for x in lines)
     total = sum(abs(a - b) for (a, b) in zip(firsts, seconds))
     print("Part 1: ", total)
 
